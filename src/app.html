@@ -50,34 +50,48 @@
 
     <main role="main" class="container-fluid">
 
-      <div class="d-flex flex-row justify-content-center bg-secondary p-3 my-3">
+      <div id="holder" class="d-flex flex-row justify-content-center bg-secondary p-3 my-3">
          <svg id="myCanvas" width="1280" height="720"></svg>
       </div>
       
       <div class="row p-3 my-3">
-        <div class="col">
-          <form id="myShapeForm">
+
+        <div class="col card">
+          <form id="myShapeForm" class="card-body">
+            <h5>Shape Control</h5>
             <div class="form-group row">
               <label for="myShapeForm-shape" class="col">shape</label>
-              <select name="shape" class="form-control col" id="myShapeForm-shape">
-                <option value="circle">circle</option>
-                <option value="triangle">triangle</option>
-                <option value="square">square</option>
-                <option value="star">star</option>
-              </select>
+              <select name="shape" class="form-control col" id="myShapeForm-shape"></select> <!-- react -->
             </div>
             <div class="form-group row">
               <label for="myShapeForm-size" class="col">size</label>
-              <input type="range" name="size" class="form-control-range col" id="myShapeForm-size" min="1" max="5" step="1">
+              <input type="range" name="size" class="form-control-range col" id="myShapeForm-size" min="1" max="10" step="1">
             </div>
             <div class="form-group row">
-              <label for="myShapeForm-colour" class="col">size</label>
-              <div class="btn-group btn-group-toggle col" id="myShapeForm-colour" data-toggle="buttons"></div> <!-- react -->
+              <label for="myShapeForm-fillcolour" class="col">fill colour</label>
+              <div class="btn-group btn-group-toggle col" id="myShapeForm-fillcolour" data-toggle="buttons"></div> <!-- react -->
+            </div>
+            <div class="form-group row">
+              <label for="myShapeForm-stroke" class="col">stroke size</label>
+              <input type="range" name="stroke" class="form-control-range col" id="myShapeForm-stroke" min="1" max="10" step="1" value="1">
+            </div>
+            <div class="form-group row">
+              <label for="myShapeForm-strokecolour" class="col">stroke colour</label>
+              <div class="btn-group btn-group-toggle col" id="myShapeForm-strokecolour" data-toggle="buttons"></div> <!-- react -->
             </div>
             <button type="submit" class="btn btn-primary">Add shape</button>
           </form>
         </div>
-        <div class="col"></div>
+
+        <div class="col card">
+          <form class="card-body">
+            
+            <h5>Sketch Control</h5>
+            
+            <div id="mySketchControl"></div> <!-- react replace -->
+
+          </form>
+        </div>
         <div class="col"></div>
       </div>
 
@@ -88,40 +102,7 @@
     <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
-    <!-- d3js TODO integrity -->
-    <script src="https://d3js.org/d3.v6.min.js"></script>
-    <!-- react -->
-    <script src="https://unpkg.com/react@17/umd/react.development.js" crossorigin></script>
-    <script src="https://unpkg.com/react-dom@17/umd/react-dom.development.js" crossorigin></script>
 
-
-    <script>
-    
-$('#myShapeForm').submit(function(e) {
-    // do not submit this form
-    e.preventDefault();
-
-    // get an associative array of just the values.
-    var values = {};
-    $(this).serializeArray()
-        .forEach(function(val, idx) {
-          values[val.name] = val.value;
-        });
-
-
-
-    console.log(JSON.stringify(values));
-
-    var svg = d3.select("#myCanvas");
-    svg.append('circle')
-      .attr('cx', 100)
-      .attr('cy', 100)
-      .attr('r', 50)
-      .attr('stroke', 'black')
-      .attr('fill', values['colour']);
-
-});
-    </script>
 
 
     <%= htmlWebpackPlugin.tags.bodyTags %>
