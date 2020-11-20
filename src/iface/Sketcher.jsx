@@ -1,8 +1,11 @@
 import React from "react";
 import {Switch} from '@material-ui/core';
+import {Button} from '@material-ui/core';
+import {Slider} from '@material-ui/core';
 import $ from "jquery";
 
 import CanvasDraw from "react-canvas-draw";
+import {SliderPicker} from 'react-color';
 
 export class SketchPad extends React.Component {
   constructor(props) {
@@ -25,8 +28,12 @@ export class SketchPad extends React.Component {
       height: this.effheight(),
       posx: this.effx(),
       posy: this.effy(),
-      zidx: props.zidx
+      zidx: props.zidx,
+      brushColor: '#444',
+      brushRadius: 12
     };
+
+    this.canvasRef = React.createRef();
   }
 
   render() {
@@ -42,10 +49,13 @@ export class SketchPad extends React.Component {
 
     //return <canvas id={this.props.id} width={this.state.width} height={this.state.height} style={cstyle}/>
     return <CanvasDraw
+            ref={this.canvasRef}
             id={this.props.id} 
             canvasWidth={this.state.width} 
             canvasHeight={this.state.height}
             hideGrid={true}
+            brushColor={this.state.brushColor}
+            brushRadius={this.state.brushRadius}
             style={cstyle}
     />;
   }
@@ -69,6 +79,26 @@ export class SketchPad extends React.Component {
     this.setState({visibility: this.onoff(checked)});
   }
 
+  setColour(hexColour) {
+    this.setState({brushColor: hexColour});
+  }
+
+  getBrushRadius() {
+    return this.state.brushRadius;
+  }
+
+  setBrushRadius(val) {
+    this.setState({brushRadius: val});
+  }
+
+  doUndo() {
+    this.canvasRef.current.undo();
+  }
+
+  doClear() {
+    this.canvasRef.current.clear();
+  }
+
   test() {
     console.log('test called for SketchPad')
     console.log(this.props.target.getBoundingClientRect());
@@ -80,15 +110,44 @@ export class SketchPad extends React.Component {
 
 
 export function SketchControl(props) {
+  
   const [checked, setChecked] = React.useState(props.checked);
-
   const toggleChecked = () => {
     console.log(checked);
     props.pad.setChecked(!checked);
     setChecked((prev) => !prev);
   };
 
-  return <Switch checked={checked} onChange={toggleChecked} />;
+  const [colour, setColor] = React.useState();
+  const colourChange = (colourx, event) => {
+    setColor(colourx);
+    props.pad.setColour(colourx['hex']);
+  };
+
+  const [brush, setBrush] = React.useState(props.pad.getBrushRadius());
+  const handleBrush = (event, newValue) => {
+    setBrush(newValue);
+    props.pad.setBrushRadius(newValue);
+  };
+
+  const padUndo = () => {
+    props.pad.doUndo();
+  };
+  
+  const padClear = () => {
+    props.pad.doClear();
+  };
+
+  return (
+    <div>
+      <Switch checked={checked} onChange={toggleChecked} />
+      <SliderPicker color={colour} onChangeComplete={colourChange} />
+      <br />
+      <Slider value={brush} step={1} marks min={1} max={25} valueLabelDisplay="auto" onChange={handleBrush} />
+      <Button variant="contained" onClick={padUndo} >Undo</Button>
+      <Button variant="contained" onClick={padClear} >Clear</Button>
+    </div>
+  );
 }
 
 /*
