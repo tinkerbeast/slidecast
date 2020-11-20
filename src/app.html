@@ -51,48 +51,23 @@
     <main role="main" class="container-fluid">
 
       <div id="holder" class="d-flex flex-row justify-content-center bg-secondary p-3 my-3">
-         <svg id="myCanvas" width="1280" height="720"></svg>
+         <div id="showarea" style="width: 1280px; height: 720px;"></div>
       </div>
       
       <div class="row p-3 my-3">
 
         <div class="col card">
-          <form id="myShapeForm" class="card-body">
-            <h5>Shape Control</h5>
-            <div class="form-group row">
-              <label for="myShapeForm-shape" class="col">shape</label>
-              <select name="shape" class="form-control col" id="myShapeForm-shape"></select> <!-- react -->
-            </div>
-            <div class="form-group row">
-              <label for="myShapeForm-size" class="col">size</label>
-              <input type="range" name="size" class="form-control-range col" id="myShapeForm-size" min="1" max="10" step="1">
-            </div>
-            <div class="form-group row">
-              <label for="myShapeForm-fillcolour" class="col">fill colour</label>
-              <div class="btn-group btn-group-toggle col" id="myShapeForm-fillcolour" data-toggle="buttons"></div> <!-- react -->
-            </div>
-            <div class="form-group row">
-              <label for="myShapeForm-stroke" class="col">stroke size</label>
-              <input type="range" name="stroke" class="form-control-range col" id="myShapeForm-stroke" min="1" max="10" step="1" value="1">
-            </div>
-            <div class="form-group row">
-              <label for="myShapeForm-strokecolour" class="col">stroke colour</label>
-              <div class="btn-group btn-group-toggle col" id="myShapeForm-strokecolour" data-toggle="buttons"></div> <!-- react -->
-            </div>
-            <button type="submit" class="btn btn-primary">Add shape</button>
-          </form>
         </div>
 
         <div class="col card">
-          <form class="card-body">
-            
-            <h5>Sketch Control</h5>
-            
-            <div id="mySketchControl"></div> <!-- react replace -->
-
+          <form class="card-body">            
+            <h5>Sketch Control</h5>            
+            <div id="mySketchControl"></div> <!-- react -->
           </form>
         </div>
-        <div class="col"></div>
+
+        <div id="contextForm" class="col card"></div> <!-- react -->
+
       </div>
 
     </main><!-- /.container -->

@@ -1,3 +1,4 @@
+import React from "react";
 import * as d3 from "d3";
 
 function dragHandlerClass() {
@@ -20,8 +21,21 @@ function dragHandlerClass() {
       .on("end", dragended);
 }
 
-class D3Canvas {
-  constructor(eleName) {
+class D3Canvas extends React.Component {
+  constructor(props) {
+    super(props);
+
+    // TODO atomicity of x and y
+    this.effx = () => {
+      return props.target.getBoundingClientRect().x - document.body.getBoundingClientRect().x;
+    }
+    this.effy = () => {
+      return props.target.getBoundingClientRect().y - document.body.getBoundingClientRect().y;
+    }
+    this.effwidth = () => props.target.getBoundingClientRect().width;
+    this.effheight = () => props.target.getBoundingClientRect().height;
+
+    // immutable + render invariant mutable state
     this.shapes = {
       'circle': d3.symbolCircle,
       'cross': d3.symbolCross,
@@ -31,12 +45,45 @@ class D3Canvas {
       'triangle': d3.symbolTriangle,
       'wye': d3.symbolWye
     };
-    this.svg = d3.select(eleName);
+    
+    this.svgRef = React.createRef();
     this.pointer = [100, 100];
     this.dragHandler = dragHandlerClass();
+    
+    // mutable state
+    this.state = {
+      width: this.effwidth(),
+      height: this.effheight(),
+      posx: this.effx(),
+      posy: this.effy(),
+      zidx: props.zidx,
+    };
+  }
+
+  render() {
+    const cstyle = {
+      zIndex: this.state.zidx,
+      position: 'absolute',
+      top: this.state.posy + 'px',
+      left: this.state.posx + 'px',
+      backgroundColor: 'black'
+    };
+    
+    // TODO: remove unnecessary id
+    return <svg ref={this.svgRef} id={this.props.id} width={this.state.width} height={this.state.height} style={cstyle}/>
+  }
+
+
+  componentDidMount() {
+
+    //console.log(this.svgRef.current.constructor.name);
+    //console.log(this.svgRef.current);
+    
+    this.svg = d3.select(this.svgRef.current);
     this.svg.on("click", (event, count) => {
       this.pointer = d3.pointer(event);
     });
+    
   }
 
   getShapeNames() {
@@ -59,7 +106,6 @@ class D3Canvas {
             event.preventDefault();
             d3.select(this).remove();
           });
-    ;
   }
 
 }

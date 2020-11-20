@@ -7,6 +7,8 @@ import $ from "jquery";
 import CanvasDraw from "react-canvas-draw";
 import {SliderPicker} from 'react-color';
 
+import * as bs from "../components/bsRadioGroup"
+
 export class SketchPad extends React.Component {
   constructor(props) {
     super(props);
@@ -113,7 +115,6 @@ export function SketchControl(props) {
   
   const [checked, setChecked] = React.useState(props.checked);
   const toggleChecked = () => {
-    console.log(checked);
     props.pad.setChecked(!checked);
     setChecked((prev) => !prev);
   };
@@ -150,12 +151,73 @@ export function SketchControl(props) {
   );
 }
 
-/*
-export class SketchControl extends React.Component {
-  render() {
-    return <SketchControlToggle pad={this.props.pad} checked={this.props.checked}/>;
-  }
-}
-*/
 
+export class ShapeControl extends React.Component {
+
+  constructor(props) {
+    super(props);
+  }
+
+  render() {
+    const formLayout = 'card-body'
+    const formGrouping = 'form-group';
+    const formGroupingLayout = 'row';
+    const formGroupEleLayout = 'col';
+
+    return (  
+      <form id={this.props.formId} className={formLayout}>
+        
+        <h5>Shape Control</h5>
+
+        <div className={formGrouping + ' ' + formGroupingLayout}>
+          <label htmlFor={this.props.formId + '-shape'} className={formGroupEleLayout}>shape</label>
+          <bs.SelectOptions id={this.props.formId + '-shape'} name="shape" values={this.props.pad.getShapeNames()} layout={formGroupEleLayout}/>
+        </div>
+
+        <div className={formGrouping + ' ' + formGroupingLayout}>
+          <label htmlFor={this.props.formId + '-size'} className={formGroupEleLayout}>size</label>
+          <input type="range" name="size" className={'form-control-range ' + formGroupEleLayout} id={this.props.formId + '-size'} min="1" max="50" step="1" />
+        </div>
+
+        <div className={formGrouping + ' ' + formGroupingLayout}>
+          <label htmlFor={this.props.formId + '-fillcolour'} className={formGroupEleLayout}>fill colour</label>
+          <bs.ColourRadioGroup formId={this.props.formId} name='fillcolour' values={this.props.colours} layout={formGroupEleLayout} />
+        </div>
+        
+        <div className={formGrouping + ' ' + formGroupingLayout}>
+          <label htmlFor={this.props.formId + '-stroke'} className={formGroupEleLayout}>stroke</label>
+          <input type="range" name="stroke" className={'form-control-range ' + formGroupEleLayout} id={this.props.formId + '-stroke'} min="1" max="100" step="5" defaultValue="1" />
+        </div>
+
+        <div className={formGrouping + ' ' + formGroupingLayout}>
+          <label htmlFor={this.props.formId + '-strokecolour'} className={formGroupEleLayout}>stroke colour</label>
+          <bs.ColourRadioGroup formId={this.props.formId} name='strokecolour' values={this.props.colours} layout={formGroupEleLayout} />
+        </div>
+
+        <button type="submit" className="btn btn-primary">Add shape</button>
+      </form>
+    );
+  }
+
+  componentDidMount() {
+
+    const shapePad = this.props.pad; // needed for closure
+
+    $('#' + this.props.formId).submit( function(e) {
+        // do not submit this form
+        e.preventDefault();
+        // get an associative array of just the values.
+        var values = {};
+        $(this).serializeArray()
+            .forEach(function(val, idx) {
+              values[val.name] = val.value;
+            });
+        console.debug(JSON.stringify(values));
+        // add to shapePad
+        // TODO: associate names here with form input names
+        shapePad.addShape(values['shape'], values['size'], values['fillcolour'], values['stroke'], values['strokecolour']);
+    });
+  }
+
+}
 

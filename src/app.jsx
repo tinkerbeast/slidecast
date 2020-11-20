@@ -8,6 +8,7 @@ import {D3Canvas} from "./components/d3Canvas"
 
 import {SketchPad} from "./iface/Sketcher" 
 import {SketchControl} from "./iface/Sketcher" 
+import {ShapeControl} from "./iface/Sketcher" 
 
 
 
@@ -18,16 +19,6 @@ const colours = ['8e44ad', '9b59b6', '2980b9', '3498db',
     'c0392b', 'e74c3c', 'bdc3c7', 'ecf0f1', 
     '7f8c8d', '95a5a6', '2c3e50', '34495e', 'transparent'
 ];
-
-function drawSketcher(skx, sky, width, height) {
-    $('#mySketcher').remove();
-
-    var sketcher = $('<canvas/>', 
-        {'style': "z-index:10; position:absolute; top:" + sky + "px; left:" + skx + "px; border: 1px solid red; visibility: hidden;"})
-        .attr({'width':width, 'height':height, 'id':'mySketcher'});
-
-    $('body').append(sketcher);
-}
 
 
 function ReactDOM_replaceDiv(element, reactComponent) {
@@ -41,12 +32,17 @@ function ReactDOM_replaceDiv(element, reactComponent) {
 $(document).ready(function() {
 
 
-    // modify dom - prepager svg canvas
-    let canvas = new D3Canvas("#myCanvas");
+    const shapePad = ReactDOM.render(
+        React.createElement(D3Canvas, {
+            target: document.getElementById('showarea'), 
+            zidx: 5,
+            id: 'myShapePad'
+        }, null),
+        document.body.appendChild(document.createElement('div'))
+    );
 
 
     const sketchOn = true;
-
     const sketchPad = ReactDOM.render(
         React.createElement(SketchPad, {
             target: document.getElementById('holder'), 
@@ -56,7 +52,6 @@ $(document).ready(function() {
         }, null),
         document.body.appendChild(document.createElement('div'))
     );
-
     ReactDOM.render(
         React.createElement(SketchControl, {
             checked: sketchOn,
@@ -65,49 +60,16 @@ $(document).ready(function() {
         document.getElementById('mySketchControl')
     );
 
-
-
     
-    // modify dom - render form elements
-    let formName = '';
-    let subName = '';
-
-    ///////////////////////////////////////////////////////////////////////////////
-    formName = 'myShapeForm';
-
-
-    subName = 'shape';
     ReactDOM.render(
-        React.createElement(SelectOptions, {values: canvas.getShapeNames()}, null),
-        document.getElementById(formName + '-' + subName)
+        React.createElement(ShapeControl, {
+            formId: 'myShapeControl',
+            'colours': colours,
+            pad: shapePad 
+        }, null), 
+        document.getElementById('contextForm')
     );
 
-    subName = 'fillcolour';
-    ReactDOM.render(
-        React.createElement(ColourRadioGroup, {formId: formName, name: subName, values: colours}, null),
-        document.getElementById(formName + '-' + subName)
-    );
-
-    subName = 'strokecolour';
-    ReactDOM.render(
-        React.createElement(ColourRadioGroup, {formId: formName, name: subName, values: colours}, null),
-        document.getElementById(formName + '-' + subName)
-    );
-
-    $('#' + formName).submit(function(e) {
-        // do not submit this form
-        e.preventDefault();
-        // get an associative array of just the values.
-        var values = {};
-        $(this).serializeArray()
-            .forEach(function(val, idx) {
-              values[val.name] = val.value;
-            });
-        console.debug(JSON.stringify(values));
-        // add to canvas
-        canvas.addShape(values['shape'], values['size'], values['fillcolour'], values['stroke'], values['strokecolour']);
-    });
-    
 
 });
 

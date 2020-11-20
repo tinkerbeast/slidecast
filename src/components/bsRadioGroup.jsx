@@ -27,7 +27,10 @@ class ColourRadioGroup extends React.Component {
     console.debug(this.props.values);
 
     const items = this.props.values.map((vals) => {
+
       const idref = this.props.formId + '-' + this.props.name + '-' + vals;
+
+      let inner = undefined;
       if (vals != 'transparent') {
         const bgcolour = '#' + vals;
         return <label key={vals} htmlFor={idref} className="btn" style={{backgroundColor: bgcolour}}>
@@ -37,11 +40,15 @@ class ColourRadioGroup extends React.Component {
         return <label key="transparent" htmlFor={idref} className="btn" style={{backgroundImage: "url(" + TransparentBg + ")"}}>
           <input type="radio" name={this.props.name} value="transparent" id={idref} autoComplete="off"></input>
           </label>;
-
       }
+
     });
 
-    return items;
+    return (
+        <div className={'btn-group btn-group-toggle ' + this.props.layout} id={this.props.formId + '-strokecolour'} data-toggle="buttons">
+          {items}
+        </div>
+      );
   }
 }
 
@@ -57,7 +64,11 @@ class SelectOptions extends React.Component {
       return <option key={vals} value={vals}>{vals}</option>
     });
 
-    return items;
+    return (
+      <select name={this.props.name} className={'form-control ' + this.props.layout} id={this.props.id}>
+        {items}
+      </select>
+    );
   }
 }
 
