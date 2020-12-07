@@ -9,6 +9,7 @@ import {D3Canvas} from "./components/d3Canvas"
 import {SketchPad} from "./iface/Sketcher" 
 import {SketchControl} from "./iface/Sketcher" 
 import {ShapeControl} from "./iface/Sketcher" 
+import {CodeControl} from "./iface/Sketcher" 
 
 
 
@@ -70,7 +71,13 @@ $(document).ready(function() {
         document.getElementById('contextForm')
     );
 
-
+    ReactDOM.render(
+        React.createElement(CodeControl, {
+            formId: 'myCodeControl',
+            lang: 'js'
+        }, null), 
+        document.getElementById('temptemp')
+    );
 });
 
 

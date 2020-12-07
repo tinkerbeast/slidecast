@@ -221,3 +221,56 @@ export class ShapeControl extends React.Component {
 
 }
 
+
+
+import hljs from "highlight.js";
+import { TextareaAutosize } from '@material-ui/core';
+
+export class CodeControl extends React.Component {
+
+  render() {
+    return (
+      <form id={this.props.formId}>
+        <textarea className="form-control" name="code" rows="10"></textarea>
+        <button type="submit" className="btn btn-primary">Render</button>
+        <pre className="lead" style={{lineHeight: '200%'}}><code className="hljs">to be replaced</code></pre>
+      </form>
+    );
+  }
+
+
+
+  componentDidMount() {
+
+    const lang = this.props.lang;
+
+    $('#' + this.props.formId).submit( function(e) {
+        // do not submit this form
+        e.preventDefault();
+        // get an associative array of just the values.
+        var values = {};
+        $(this).serializeArray()
+            .forEach(function(val, idx) {
+              values[val.name] = val.value;
+            });
+
+        console.debug(JSON.stringify(values));
+
+        let pcode = hljs.highlightAuto(values['code']);
+
+        console.debug(pcode);
+
+        let hcode = pcode.value
+          .split('\r\n')
+          .map(val => '<div>' + val + '</div>')
+          .join('');
+
+        console.debug(hcode);
+
+        $(this).find('pre code').html(hcode);
+
+        
+    });
+  }
+    
+}
